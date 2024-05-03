@@ -1,42 +1,67 @@
 #include <iostream>
 #include <algorithm>
 #include <cstring>
-#include <limits>
+#include <queue>
+#include <cstdlib>
+
+
 
 using namespace std;
-int INF = -987654321;
-int N;
-int taketime[1500100];
-int getprice[1500100];
-int cashe[1500100];
+
+
+int N,M;
+int weight[31];
+int have_to_find[10];
+
+bool dp[31][40100];
+bool check[40100];
+int nowlimitweight = 0;
+
 
 void get(){
     cin>>N;
-    for(int i = 0 ; i < N ; i++){
-        cin>>taketime[i]>>getprice[i];
+    for(int i = 0 ; i < N ; i++)
+        cin>>weight[i];
+    
+    memset(dp,0,sizeof(dp));
+    memset(check,false,sizeof(check));
+    
+    cin>>M;
+    for(int i = 0 ; i < M ; i++)
+        cin>>have_to_find[i];
+}
+
+void getresult(int currentmarble, int currentWeight) {
+	if (currentmarble > N)
+		return;
+	if (dp[currentmarble][currentWeight] != 0)
+		return;
+
+	dp[currentmarble][currentWeight] = true;
+
+	getresult(currentmarble + 1, currentWeight + weight[currentmarble]);
+	getresult(currentmarble + 1, currentWeight);
+	getresult(currentmarble + 1, abs(currentWeight - weight[currentmarble]));
+}
+
+
+void check_result(){
+    for(int i = 0 ; i < M ;i++){
+        if(dp[N][have_to_find[i]])
+            cout<<"Y ";
+        else
+            cout<<"N ";
     }
-    memset(cashe,-1,sizeof(cashe));
 }
-
-int getresult(int nowday){
-    if(nowday > N) return INF;
-    
-    int& ret = cashe[nowday+1];
-    if(ret != -1) return ret;
-    
-    ret = 0;
-    if(nowday != -1 && nowday + taketime[nowday] <= N)
-        ret = max(ret, getprice[nowday] + getresult(nowday + taketime[nowday]));
-    ret = max(ret, getresult(nowday+1));
-        
-    return ret;
-}
-
 
 int main(void){
     get();
-    cout<<getresult(-1);
+    getresult(0,0);
+    check_result();
 }
+
+
+
 
 
 
