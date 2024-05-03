@@ -4,61 +4,58 @@
 #include <limits>
 
 using namespace std;
-int M;
-int numarr[501][501] = {0,}; //0부터 유의미 M-1까지 유의미
-int original_num[501];
-int dp[501][501];
 
-void get_n_clear(){
-    cin>>M;
-    for(int i = 0 ; i < M ; i++)
-        cin>>original_num[i];
-    for(int i = 0 ; i < M ; i++)
-        numarr[i][i] = original_num[i];
-    for(int i = 0 ; i < M ; i++){
-        for(int j = i+1 ; j < M ; j++){
-            numarr[i][j] = numarr[i][j-1] + original_num[j];
-        }
-    }
-    memset(dp,98765432,sizeof(dp));
+int N;
+int board[100100][3];
+int cashe[3];
+
+void get(){
+    cin>>N; 
+    for(int i = 1 ; i <= N ; i++)
+        cin>>board[i][0]>>board[i][1]>>board[i][2];
+}
+
+void getmaxresult(int nowN){
+    if(nowN == 0) return;
+    cashe[0] = max(cashe[0],cashe[1]);
+    cashe[2] = max(cashe[1],cashe[2]);
+    cashe[1] = max(cashe[0],cashe[2]);
+    
+    cashe[0] += board[nowN][0];
+    cashe[1] += board[nowN][1];
+    cashe[2] += board[nowN][2];
+    getmaxresult(nowN-1);
+    
+}
+void getminresult(int nowN){
+    if(nowN == 0) return;
+    cashe[0] = min(cashe[0],cashe[1]);
+    cashe[2] = min(cashe[1],cashe[2]);
+    cashe[1] = min(cashe[0],cashe[2]);
+    
+    cashe[0] += board[nowN][0];
+    cashe[1] += board[nowN][1];
+    cashe[2] += board[nowN][2];
+    getminresult(nowN-1);
     
 }
 
 
-int getresult(){
-    for(int i = 0 ; i < M ; i++)
-        dp[i][i] = 0;
-        
-    for(int i = 1 ; i < M ; i++){
-        for(int j = 0 ; j < M ; j++){
-            //dp[j][j+i] 구하는 중
-            if(j+i >= M)
-                break;
-            for(int p = 0 ; p < i ; p++){
-                
-                dp[j][j+i] = min(dp[j][j+i],dp[j][j+p] + dp[j+p+1][j+i]);
-            }
-            dp[j][j+i] += numarr[j][j+i];
-        }
-    }
-    return dp[0][M-1];
-}
-
-
-
-
-int main(void){ 
-    int N;
-    cin>>N;
-    for(int i = 0 ; i < N ; i++){
-        get_n_clear();
-        cout<<getresult()<<"\n";
-    }
+int main(void){
+    get();
     
+    cashe[0] = board[N][0];
+    cashe[1] = board[N][1];
+    cashe[2] = board[N][2];
+    getmaxresult(N-1);
+    cout<<max(cashe[0],max(cashe[1],cashe[2]))<<" ";
+    
+    cashe[0] = board[N][0];
+    cashe[1] = board[N][1];
+    cashe[2] = board[N][2];
+    getminresult(N-1);
+    cout<<min(cashe[0],min(cashe[1],cashe[2]));
 }
-
-
-
 
 
 
