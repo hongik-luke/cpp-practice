@@ -1,61 +1,90 @@
 #include <iostream>
 #include <algorithm>
 #include <cstring>
-#include <limits>
+#include <queue>
 
 using namespace std;
 
-const long long NEGINF = numeric_limits<long long>::min();
-int N,M,K;
-int numarr1[110];
-int numarr2[110];
-int cashe[110][110];
+int X,Y;
+int board[510][510];
+int dp[510][510];
+bool visit[510][510];
+int dx[4] = {-1,1,0,0};
+int dy[4] = {0,0,-1,1};
+
+
+struct pos{
+    int value;
+    int xplace;
+    int yplace;
+    
+};
+
+struct cmp {
+    bool operator()(pos a, pos b) {
+        return a.value < b.value;
+    }
+};
+
+priority_queue <pos,vector<pos>, cmp> pq; 
+
 void get(){
-    cin>>M>>K;
-    for(int i = 0 ; i < M ; i++)
-            cin>>numarr1[i];
-    for(int i = 0 ; i < K ; i++)
-            cin>>numarr2[i];
-    memset(cashe,-1,sizeof(cashe));
+    cin>>X>>Y;
+    for(int i = 1; i <= X ; i++)
+        for(int j = 1; j <= Y ; j++)
+            cin>>board[i][j];
+    
+    memset(dp,0,sizeof(dp));
+    dp[1][1] = 1;
+    memset(visit,false,sizeof(visit));
+    
+    
 }
 
-
-int check(int index1, int index2){
-    
-    int& ret = cashe[index1+1][index2+1];
-    if(ret != -1)
-        return ret;
-    ret = 2;
-    
-    int a = (index1 == -1 ? NEGINF : numarr1[index1]);
-    int b = (index2 == -1 ? NEGINF : numarr2[index2]);
-    int now = max(a,b);
-    
-    for(int i = index1+1 ; i < M ; i++){
-        if(numarr1[i] > now){
-            ret = max(ret, 1 + check(i,index2));
+void getresult(){
+    pos nowpos = {board[1][1],1,1};
+    pos newpos;
+    pq.push(nowpos);
+    visit[nowpos.xplace][nowpos.yplace] = true;
+    while(!pq.empty()){
+        nowpos = pq.top();
+        pq.pop();
+        
+        for(int i = 0 ; i < 4 ; i++){
+            newpos.xplace = nowpos.xplace + dx[i];
+            newpos.yplace = nowpos.yplace + dy[i];
+            //갈수 있는 곳인지
+            if(newpos.xplace <= 0 || newpos.yplace <= 0 || newpos.xplace > X ||newpos.yplace > Y)
+                continue;
+            //조건에 맞는 곳인지
+            newpos.value = board[newpos.xplace][newpos.yplace];
+            if(newpos.value < nowpos.value){
+                
+                dp[newpos.xplace][newpos.yplace] += dp[nowpos.xplace][nowpos.yplace];
+                
+                if(!visit[newpos.xplace][newpos.yplace])
+                    pq.push(newpos);
+                visit[newpos.xplace][newpos.yplace] = true;
+            }
         }
     }
     
-    for(int i = index2+1 ; i < K ; i++){
-        if(numarr2[i] > now ){
-            ret = max(ret, 1 + check(index1,i));
-        }
-    }
-
-    return ret;
+    
 }
 
 
 int main(void){
-    cin>>N;
-    for(int i = 0 ; i < N ; i++){
-        get();
-        cout<<check(-1,-1)-2<<"\n";
-
+    get();
+    getresult();
+    cout<<dp[X][Y]<<"\n";
+    
+    for(int i = 1; i <= X ; i++){
+        for(int j = 1; j <= Y ; j++)
+            cout<<dp[i][j]<<" ";
+        cout<<"\n";
     }
+    
 }
-
 
 
 
