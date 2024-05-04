@@ -1,61 +1,84 @@
 #include <iostream>
 #include <algorithm>
 #include <cstring>
-#include <limits>
+
+
 
 using namespace std;
 
+int MOD = 1000000; 
+string str;
 int N;
-int board[100100][3];
-int cashe[3];
-
+int numarr[5010];
+int cashe[5010]; //K, N 
+bool is_wrong = false;
 void get(){
-    cin>>N; 
-    for(int i = 1 ; i <= N ; i++)
-        cin>>board[i][0]>>board[i][1]>>board[i][2];
+    cin>>str;
+    
+    N = str.length();
+    int idx = 0 ;
+    for(int i = 0; i < str.length()-1; i++){
+        if(str[i] == '0'){
+            is_wrong = true;
+            break;
+        }
+        
+        if(str[i+1] != '0'){
+            numarr[idx] = str[i] - 48;
+        }
+        else{
+            numarr[idx] = (str[i] - 48)*10 + (str[i+1] - 48);
+            N--;
+            if(numarr[idx] > 26) {
+                is_wrong = true;
+                break;
+            }
+            i++;
+        }
+        idx++;
+        
+    }
+    if(str[str.length()-1] != '0')
+        numarr[idx] = str[str.length()-1] -48;
+    else if(str.length() == 1 && str[str.length()-1] == '0') is_wrong = true;
+    else if(str[str.length()-1] == '0' && str[str.length()-2] == '0') is_wrong = true;
+
+    
+    memset(cashe,-1,sizeof(cashe));
+
 }
 
-void getmaxresult(int nowN){
-    if(nowN == 0) return;
-    cashe[0] = max(cashe[0],cashe[1]);
-    cashe[2] = max(cashe[1],cashe[2]);
-    cashe[1] = max(cashe[0],cashe[2]);
+int getresult(int index){
     
-    cashe[0] += board[nowN][0];
-    cashe[1] += board[nowN][1];
-    cashe[2] += board[nowN][2];
-    getmaxresult(nowN-1);
+    if(index >= N-1)
+        return 1;
     
-}
-void getminresult(int nowN){
-    if(nowN == 0) return;
-    cashe[0] = min(cashe[0],cashe[1]);
-    cashe[2] = min(cashe[1],cashe[2]);
-    cashe[1] = min(cashe[0],cashe[2]);
+    int& ret = cashe[index];
+    if(ret != -1 ) return ret;
     
-    cashe[0] += board[nowN][0];
-    cashe[1] += board[nowN][1];
-    cashe[2] += board[nowN][2];
-    getminresult(nowN-1);
+    if((numarr[index] == 1 && numarr[index+1] <= 9) || (numarr[index] == 2 && numarr[index+1] <= 6) )
+        ret =(getresult(index+1) + getresult(index+2)) % 1000000;
+    else
+        ret = getresult(index+1);
+
     
+    return ret;
 }
 
 
 int main(void){
     get();
+    if(is_wrong){
+        cout<<0<<"\n";
+        return 0;
+    }
+
+    cout<<getresult(0)%1000000<<"\n";
     
-    cashe[0] = board[N][0];
-    cashe[1] = board[N][1];
-    cashe[2] = board[N][2];
-    getmaxresult(N-1);
-    cout<<max(cashe[0],max(cashe[1],cashe[2]))<<" ";
-    
-    cashe[0] = board[N][0];
-    cashe[1] = board[N][1];
-    cashe[2] = board[N][2];
-    getminresult(N-1);
-    cout<<min(cashe[0],min(cashe[1],cashe[2]));
 }
+
+
+
 
 
 

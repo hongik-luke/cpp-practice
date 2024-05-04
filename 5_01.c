@@ -3,61 +3,66 @@
 #include <cstring>
 #include <queue>
 #include <cstdlib>
-
+#include <vector>
 
 
 using namespace std;
 
-
-int N,M;
-int weight[31];
-int have_to_find[10];
-
-bool dp[31][40100];
-bool check[40100];
-int nowlimitweight = 0;
+int INF = 98765;
+int N,K;
+vector<int> v;
+int type[8];
+int dp[35][8] //n,type
 
 
 void get(){
-    cin>>N;
-    for(int i = 0 ; i < N ; i++)
-        cin>>weight[i];
+
+    int nownum;
+    cin>>N>>K;
     
-    memset(dp,0,sizeof(dp));
-    memset(check,false,sizeof(check));
-    
-    cin>>M;
-    for(int i = 0 ; i < M ; i++)
-        cin>>have_to_find[i];
-}
+    for(int i = 0 ;i < N ; i++){
 
-void getresult(int currentmarble, int currentWeight) {
-	if (currentmarble > N)
-		return;
-	if (dp[currentmarble][currentWeight] != 0)
-		return;
-
-	dp[currentmarble][currentWeight] = true;
-
-	getresult(currentmarble + 1, currentWeight + weight[currentmarble]);
-	getresult(currentmarble + 1, currentWeight);
-	getresult(currentmarble + 1, abs(currentWeight - weight[currentmarble]));
-}
-
-
-void check_result(){
-    for(int i = 0 ; i < M ;i++){
-        if(dp[N][have_to_find[i]])
-            cout<<"Y ";
-        else
-            cout<<"N ";
+        cin>>nownum;
+        bool check = true;
+        for(auto i = 0 ; i < v.size() ; i++){
+            if(v[i] == nownum){
+                check = false;
+                break;
+            }
+        }
+        
+        if(check == true)
+            v.push_back(nownum);
     }
+    sort(v.begin(), v.end());
+    N = v.size();
+    memset(cashe,-1,sizeof(cashe));
 }
+
+int getresult(int index, int nowvalue) {
+	if(nowvalue > K)
+	    return INF;
+	if(nowvalue == K)
+	    return 0;
+	
+	int& ret = cashe[index][nowvalue];
+	if(ret != -1) return ret;
+	ret = INF;
+	for(int i = index ; i < N ;i++){
+        ret = min(ret, 1 + getresult(i,nowvalue+v[i]));
+	}
+
+	return ret;
+}
+
 
 int main(void){
     get();
-    getresult(0,0);
-    check_result();
+    int result = getresult(0,0); 
+    if(result == INF)
+        cout<<-1;
+    else
+        cout<<result;
 }
 
 
