@@ -1,62 +1,79 @@
+//14503 내일해보기
 #include <iostream>
 #include <algorithm>
 #include <cstring>
+#include <queue>
 using namespace std;
 
-int N;
-int v[100005];
+int N,M;
+vector<int> v[110];
 
-bool check[100005];
-bool done[100005];
-int cnt = 0;
-void dfs(int nowindex){
-    check[nowindex] = true;
-    
-    int next = v[nowindex];
-    if(!check[next]){
-        dfs(next);
+void input(){
+    cin>>N>>M;
+    int num1,num2;
+    for(int i = 0; i < N+M ; i++){
+        cin>>num1>>num2;
+        v[num1].push_back(num2);
     }
-    else if(!done[next]){
-        cnt++;
-        done[next] = true;
-        for (int i = next ; i != nowindex ; i = v[i]){
-            cnt++;
+    for(int i = 1 ; i <= 99 ; i++){
+        if(v[i].size() == 0){
+            for(int j = 1 ; j <= 6 ; j++){
+                v[i].push_back(i+j);
+            }
         }
-        return ;
     }
-
-    done[nowindex] = true;
 }
 
-int getresult(){
-    cnt = 0;
+struct pos{
+    int num;
+    int cnt;
+};
+struct cmp{
+    bool operator()(pos a, pos b){
+        return a.cnt > b.cnt;
+    }
+};
+
+bool check[110];
+int bfs(){
     memset(check,false,sizeof(check));
-    memset(done,false,sizeof(done));
-    for(int i = 1 ; i <= N ; i++){
-        if(!check[i]){
-            dfs(i);
+    int nowcnt;
+    pos now,new1;
+    now = {1,0};
+    priority_queue <pos,vector<pos>,cmp> pq;
+    pq.push(now);
+    check[1] = true;
+    
+    while(!pq.empty()){
+        now = pq.top();
+        pq.pop();
+        //cout<<now.num<<" "<<now.cnt<<"\n";
+        nowcnt = now.cnt;
+        
+        new1.cnt = now.cnt + 1;
+        for(int i = 0 ; i < v[now.num].size() ; i++){
+            new1.num = v[now.num][i];
+            
+            if(v[now.num].size() == 1){
+                new1.cnt = now.cnt;
+                pq.push(new1);
+                break;
+            }
+            if(new1.num == 100) return new1.cnt;
+            else if(new1.num > 100 || check[new1.num]) continue;
+            else{
+                pq.push(new1);
+                check[new1.num] = true;
+            }
         }
     }
-
-    return N - cnt;
 }
+
 
 int main(void){
-    ios_base :: sync_with_stdio(false); 
-    cin.tie(NULL); 
-    cout.tie(NULL);
-    int number;
-    cin>>number;
-    for(int i = 0 ; i < number ; i++){
-        cin>>N;
-        for(int i = 1 ; i <= N ; i++)
-            cin>>v[i];
-        cout<<getresult()<<"\n";
-    }
-
+    input();
+    cout<<bfs();
 }
-
-
 
 
 
