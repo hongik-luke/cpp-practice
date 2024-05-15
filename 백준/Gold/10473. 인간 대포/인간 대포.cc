@@ -31,7 +31,7 @@ void input(){
     }
 }
 double gettime(double x_1, double y_1, double x_2, double y_2){ return double(sqrt((y_2-y_1)*(y_2-y_1) + (x_2-x_1)*(x_2-x_1))) / 5;}
-double gettime_to_cannon(double x_1, double y_1, double x_2, double y_2){return fabs(sqrt((y_2-y_1)*(y_2-y_1) + (x_2-x_1)*(x_2-x_1)) -50)/5;}
+double gettime_to_cannon(double x_1, double y_1, double x_2, double y_2){return abs(sqrt((y_2-y_1)*(y_2-y_1) + (x_2-x_1)*(x_2-x_1)) -50)/5;}
 
 struct qpos{
     double times;
