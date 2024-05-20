@@ -16,6 +16,23 @@ void input(){
 int getresult(){
     //6처리
     int result = arr[6];
+
+    //5처리
+    result += arr[5];
+    if(arr[1] - arr[5]*11 < 0) arr[1] = 0;
+    else arr[1] = arr[1] - arr[5]*11;
+    
+    //4처리
+    result += arr[4];
+    int remain4 = arr[4]*5;
+    if(remain4 - arr[2] > 0){
+        remain4 = (remain4-arr[2])*4;
+        arr[2] = 0;
+        if(arr[1] - remain4 < 0) arr[1] = 0;
+        else arr[1] = arr[1] - remain4;
+    }
+    else arr[2] = arr[2] - remain4;
+
     //3처리
     result += arr[3]/4;
     arr[3] = arr[3]%4;
@@ -66,24 +83,6 @@ int getresult(){
             if(arr[1] < 0) arr[1] = 0;
         }
     }
-
-    //5처리
-    result += arr[5];
-    if(arr[1] - arr[5]*11 < 0) arr[1] = 0;
-    else arr[1] = arr[1] - arr[5]*11;
-    
-    //4처리
-    result += arr[4];
-    int remain4 = arr[4]*5;
-    if(remain4 - arr[2] > 0){
-        remain4 = (remain4-arr[2])*4;
-        arr[2] = 0;
-        if(arr[1] - remain4 < 0) arr[1] = 0;
-        else arr[1] = arr[1] - remain4;
-    }
-    else arr[2] = arr[2] - remain4;
-
-    
     
     //2처리
     result += (arr[2]*4)/36;
@@ -100,3 +99,4 @@ int main(void){
     input();
     cout<<getresult();
 }
+
