@@ -5,7 +5,7 @@
 #include <cmath>
 using namespace std;
 int N;
-int arr[100010];
+int64_t arr[100010];
 const int64_t M = 1000000000;
 void input(){
     cin>>N;
@@ -14,19 +14,18 @@ void input(){
     }
 }
 
-int64_t get(int num){
+int64_t get(int64_t num){
     int64_t returnnum = 0;
-    
     for(int i = 1 ; i < N ; i++){
         returnnum += abs(arr[i]-num*i);
     }
     return returnnum;
 }
 
-int result(){
-    int lo = 1; int hi = M/N+1;
-    int mida,midb;
-    for(int i = 0 ; i < 100 ; i++){
+void result(){
+    int64_t lo = 1; int64_t hi = M;
+    int64_t mida,midb;
+    for(int i = 0 ; i < 300 ; i++){
         mida = (2*lo + hi)/3;
         midb = (lo + 2*hi)/3;
         //cout<<lo<<" "<<mida<<" "<<midb<<" "<<hi<<"\n";
@@ -38,9 +37,12 @@ int result(){
         }
     }
     
-    return get(midb);
+    int64_t result = min(get(lo),get(mida));
+    result = min(result, get(midb));
+    result = min(get(midb), get(hi));
+    cout<<result;
 }
 int main(void){
     input();
-    cout<<result();
+    result();
 }
