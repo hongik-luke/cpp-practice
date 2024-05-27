@@ -21,7 +21,7 @@ int getresult(){
     int ret = 0;
     int hap = sosu[0];
     int first = 0 ; int last = 0;
-    while(sosu[first] <= N){
+    while(first <= last){
         if(hap > N){
             hap -= sosu[first];
             first++;
