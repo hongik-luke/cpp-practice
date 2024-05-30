@@ -24,17 +24,14 @@ void getresult(){
     for(int i = 1 ; i <= stu_cnt ; i++){
         
         if(stu[i].first == 1){
-            for(int j = stu[i].second ; j <= len ;){
+            for(int j = stu[i].second ; j <= len ;j = j + stu[i].second){
                 switches[j] = (switches[j]+1)%2;
-                j = j + stu[i].second;
             }
         }
         else{
             int lo = stu[i].second; 
             int hi = stu[i].second; 
-            while(1){
-                if(lo-1 < 1 || hi+1 > len) break;
-                
+            while(lo > 1 && hi < len){
                 if(switches[lo-1] == switches[hi+1]){
                     lo--;
                     hi++;
