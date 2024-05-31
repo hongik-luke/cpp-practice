@@ -1,37 +1,35 @@
 #include <iostream>
 #include <algorithm>
 #include <cstring>
-#include <stack>
+#include <queue>
 
 using namespace std;
 int N,K;
-int arr[10000];
-int result_arr[10000];
+queue <int> pq;
+queue <int> resultq;
 void getresult(){
+    cin>>N>>K;
+    for(int i = 1 ; i <= N ; i++)
+        pq.push(i);
     int i = 0;
-    int idx = 0;
-    int cnt = 0;
-    while(cnt < N){
+    while(!pq.empty()){
         i++;
-        idx = (idx+1)%10000;
-        if(i%K == 0){
-            result_arr[cnt++] = arr[idx];
-        }
-        else{
-            arr[(idx+N-cnt)%10000] = arr[idx];
-        }
+        int n = pq.front();
+        pq.pop();
+        
+        if(i % K == 0)
+            resultq.push(n);
+        else
+            pq.push(n);
     }
 }
 int main(void){
-    cin>>N>>K;
-    for(int i = 1 ; i <= N ; i++)
-        arr[i] = i;
-    
     getresult();
     cout<<"<";
     for(int i = 0 ; i < N-1 ; i++){
-        cout<<result_arr[i]<<", ";
+        cout<<resultq.front()<<", ";
+        resultq.pop();
     }
-    cout<<result_arr[N-1]<<">";
+    cout<<resultq.front()<<">";
        
 }
