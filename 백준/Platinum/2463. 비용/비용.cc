@@ -71,7 +71,7 @@ void get_result(){
             all -= n.value;
             continue;
         }
-        result += all*(int64_t)(a.getsize(n.from)*a.getsize(n.to));
+        result += all*(a.getsize(n.from)*a.getsize(n.to));   
         result %= 1000000000;
         a.marge(n.from, n.to);
         all -= n.value;
