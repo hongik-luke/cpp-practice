@@ -6,8 +6,8 @@
 using namespace std;
 
 int N;
-int bottomcashe[1010];
-int topcashe[1010];
+int bottomcashe[101];
+int topcashe[101];
 
 
 struct pos{
