@@ -2,44 +2,39 @@
 #include <algorithm>
 #include <cstring>
 #include <queue>
-#include <vector>
+
 using namespace std;
-
 int N,M;
-char making[17];
-char board[17];
-
+char arr[16];
 void input(){
     cin>>N>>M;
-    char n;
-    for(int i = 0 ; i < M ; i++){
-        cin>>n;
-        board[i] = n;
-    }
-    sort(board,board+M);
+    for(int i = 0 ; i < M ; i++)
+        cin>>arr[i];
+    sort(arr,arr+M);
 }
-void get(int now, int beforeidx, int mo ,int notmo){
-    if(now == N){
-        if(mo < 1 || notmo < 2) return;
+
+char n_arr[16];
+void make(int idx, int remain){
+    if(idx == N){
+        int cnt = 0;
+        for(int i = 0 ; i < N ; i++){
+            if(n_arr[i] == 'a' || n_arr[i] == 'e' || n_arr[i] == 'i' || n_arr[i] == 'o' || n_arr[i] == 'u' ) cnt++;
+        }
+        if(cnt < 1 || N-cnt < 2) return;
         
-        for(int i = 0 ; i < N ; i++)
-            cout<<making[i];
+        for(int i = 0 ; i < N ; i++){
+            cout<<n_arr[i];
+        }
         cout<<"\n";
-        
-        return;
+        return ;
     }
-    for(int i = beforeidx+1 ; i < M ; i++){
-        if(board[i] == 'a' || board[i] == 'i' || board[i] == 'o' || board[i] == 'u' || board[i] == 'e'){
-            making[now] = board[i];
-            get(now+1, i, mo+1 ,notmo);
-        }
-        else{
-            making[now] = board[i];
-            get(now+1, i, mo ,notmo+1);
-        }
+    
+    for(int i = remain+1 ; i < M ; i++){
+        n_arr[idx] = arr[i];
+        make(idx+1,i);
     }
 }
 int main(void){
     input();
-    get(0,-1,0,0);
+    make(0,-1);
 }
