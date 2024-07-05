@@ -23,7 +23,7 @@ bool check(uint64_t num){
 }
 
 uint64_t get(){
-    uint64_t lo = 0; uint64_t hi = 10000000000000000000;
+    uint64_t lo = 0; uint64_t hi = 9000000000000000000;
     uint64_t mid;
     while(lo <= hi){
         mid = (lo+hi)/2;
