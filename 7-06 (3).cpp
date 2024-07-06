@@ -2,82 +2,81 @@
 #include <algorithm>
 #include <cstring>
 #include <queue>
-#include <map> 
+
 using namespace std;
-int T,N,M;
-int arr1[1001];
-int arr2[1001];
-vector<int> v1;
-vector<int> v2;
+int N,M;
+int arr[1000001];
+int seg[4000000];
 void input(){
-    cin>>T;
-    cin>>N;
-    for(int i = 0 ; i < N ; i++){
-        cin>>arr1[i];
-    }
-    cin>>M;
-    for(int i = 0 ; i < M ; i++){
-        cin>>arr2[i];
-    }
-}
-map<int, int> ma;
-
-void getv1(int beforeidx, int now){
-    if(beforeidx == N-1) return;
-    
-    v1.push_back(now+arr1[beforeidx+1]);
-    getv1(beforeidx+1,now+arr1[beforeidx+1]);
-}
-void getv2(int beforeidx, int now){
-    if(beforeidx == M-1) return;
-    
-    v2.push_back(now+arr2[beforeidx+1]);
-    getv2(beforeidx+1,now+arr2[beforeidx+1]);
-}
-void getv(){
+    int a1,a2;
+    cin>>N>>a1>>a2;
+    M = a1+a2;
     for(int i = 0 ; i < N; i++){
-        v1.push_back(arr1[i]);
-        getv1(i,arr1[i]);
+        cin>>arr[i];
     }
-    sort(v1.begin(),v1.end());
-     for(int i = 0 ; i < M; i++){
-        v2.push_back(arr2[i]);
-        getv2(i,arr2[i]);
+}
+int get_seg(int idx, int lo, int hi){
+    if(lo == hi){
+        seg[idx] = arr[lo];
+        return seg[idx];
     }
-    sort(v2.begin(),v2.end());
+    int mid = (lo+hi)/2;
+    int64_t num = get_seg(idx*2,lo,mid);
+    num = (num*get_seg(idx*2+1,mid+1,hi)) % 1000000007;
+    seg[idx] = num;
+    return seg[idx];
+}
+int n1,n2,n3;
+int change(int idx, int lo, int hi){
+    if(lo == n2 && hi == n2){
+        seg[idx] = n3;
+        return seg[idx];
+    }
+    int mid = (lo+hi)/2;
+    int64_t num;
+    if(lo <= n2 && n2 <= mid){
+        num = change(idx*2,lo,mid);
+        num = (num*seg[idx*2+1]) % 1000000007;
+    }
+    else if(mid+1 <= n2 && n2 <= hi){
+        num = seg[idx*2];
+        num = (num*change(idx*2+1,mid+1,hi)) % 1000000007;
+    }
+    seg[idx] = num;
+    return seg[idx];
+}
+int get(int idx, int lo, int hi){
     
-}
-void v2_mapping(){
-    int len = v2.size();
-    int cnt = 1;
-    for(int i = 0 ; i < len-1 ; i++){
-        if(v2[i] == v2[i+1]) cnt++;
-        else{
-            ma.insert(make_pair(v2[i], cnt));
-            cnt = 1;
-        }
+    if(n2 <= lo && hi <= n3) return seg[idx];
+    else if(hi < n2 || n3 < lo) return 1;
+    else{
+        int mid = (lo+hi)/2;
+        int64_t num;
+        num = get(idx*2,lo,mid);
+        num = (num*get(idx*2+1,mid+1,hi)) % 1000000007;
+        return num;
     }
-    ma.insert(make_pair(v2[len-1], cnt));
+}
 
-}
-int64_t get(){
-    int64_t ret = 0;
-    int len = v1.size();
-    for(int i = 0 ; i < len ; i++){
-        int gett = T-v1[i];
-        if(ma.find(gett) != ma.end()){
-            ret += ma.find(gett)->second;
+void problem(){
+    for(int i = 0 ; i < M ; i++){
+        cin>>n1>>n2>>n3;
+        if(n1 == 1){
+            n2 = n2-1;
+            change(1,0,N-1);
+        }
+        else{
+            n2 = n2-1;
+            n3 = n3-1;
+            cout<<get(1,0,N-1)<<"\n";
         }
     }
-    return ret;
 }
 int main(void){
     input();
-    getv();
-    v2_mapping();
-    cout<<get();
+    get_seg(1,0,N-1);
+    problem();
 }
-
 
 
 
