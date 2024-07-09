@@ -109,7 +109,7 @@ int partition(int lo, int hi){
     return r;
 }
 void quick_sort(int lo, int hi){
-    if(lo <= hi){
+    if(lo < hi){
 
         int pivot = partition(lo,hi);
         quick_sort(lo, pivot-1);
