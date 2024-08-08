@@ -1,69 +1,58 @@
 #include <iostream>
-#include <algorithm>
+#include <queue>
 #include <cstring>
-#include <vector>
+#include <algorithm>
+
+#define FastIO cin.tie(0); cout.tie(0); ios_base::sync_with_stdio(false);
+
 using namespace std;
 int N;
-vector <int> v;
+vector<int> v;
 void input(){
     cin>>N;
-    int n;
+    int n1;
     for(int i = 0 ; i < N ; i++){
-        cin>>n;
-        v.push_back(n);
+        cin>>n1;
+        v.push_back(n1);
     }
     sort(v.begin(),v.end());
 }
 
 int64_t get(){
-    int64_t cnt = 0;
-    for(int i = 0 ; i < N ; i++){
-        if(v[i] > 0) break;
-        int pick1 = v[i];
-        
-        int lo = i+1; int hi = N-1;
+    int64_t ret = 0;
+    int len = v.size();
+    for(int i = 0 ; i < len ; i++){
+        int lo = i+1;
+        int hi = len-1;
         while(lo < hi){
-            if(pick1 + v[lo] + v[hi] == 0){
-                if(v[lo] == v[lo+1] || v[hi] == v[hi-1]){
-                    if(v[lo] == v[hi]){
-                        cnt += ((hi-lo+1)*(hi-lo)/2);
-                        break;
-                    }
-                    else{
-                        int v1 = 1 ; int v2 = 1;
-                        while(v[lo] == v[lo+1]){
-                            v1++;
-                            lo++;
-                        }
-                        while(v[hi-1] == v[hi]){
-                            v2++;
-                            hi--;
-                        }
-                        lo++;
-                        hi--;
-                        cnt += v1*v2;
-                    }
+            if(v[lo] + v[hi] + v[i] == 0){
+                if(v[lo] == v[hi]){
+                    ret += (hi-lo+1)*(hi-lo)/2;
+                    break;
                 }
-                else{
-                    cnt++;
-                    if(abs(v[lo] - v[lo+1]) >= abs(v[hi] - v[hi-1])){
-                        hi--;
-                    }
-                    else lo++;
+                int hicnt = 1;
+                int locnt = 1;
+                while(v[hi]-v[hi-1] == 0){
+                    hicnt++;
+                    hi--;
                 }
-                
-                
-            }
-            else if(pick1 + v[lo] + v[hi] < 0){
+                while(v[lo+1]-v[lo] == 0){
+                    locnt++;
+                    lo++;
+                }
+                ret += hicnt*locnt;
                 lo++;
             }
-            else hi--;
+            else if(v[lo] + v[hi] + v[i] > 0) hi--;
+            else lo++;
         }
     }
-    return cnt;
+    
+    return ret;
 }
 
-int main(void){
-    input();    
+int main() {
+    FastIO;
+    input();
     cout<<get();
 }
